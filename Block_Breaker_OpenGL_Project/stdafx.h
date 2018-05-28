@@ -32,6 +32,7 @@ struct paddle
 }paddle;
 
 bool level2_flag = false;
+bool gameover_flag = false;
 
 int hitCount = 0;
 float lastCurrentTime, currentTime;

@@ -4,6 +4,7 @@
 #include <GL\glew.h>
 #include <GL\freeglut.h>
 #include<iostream>
+#include<string>
 #include"stdafx.h"
 #include<stdlib.h>
 #include<time.h>
@@ -144,10 +145,10 @@ void reshape()		//Modify the co-ordinates according to the key-presses and colli
 		ball.left = true;
 		ball.velx = -ball.velx;
 	}
-	if (ball.bally + ball.radius>500)
+	if (ball.bally + ball.radius > 480)
 		ball.vely = -ball.vely;
-	else if (ball.bally<0)
-		exit(0);
+	else if (ball.bally < 0)
+		gameover_flag = true;
 
 	if (check_collision(ball.ballx, ball.bally - 13, ball.radius, ball.radius, paddle.myx, paddle.myy, paddle.width, paddle.height) == true)
 	{
@@ -208,16 +209,20 @@ void level2_reshape() {
 		ball.left = true;
 		ball.velx = -ball.velx;
 	}
-	if (ball.bally + ball.radius>500)
+	if (ball.bally + ball.radius>480)
 		ball.vely = -ball.vely;
 	else if (ball.bally<0)
-		exit(0);
+		gameover_flag = true;
 
 	if (check_collision(ball.ballx, ball.bally - 13, ball.radius, ball.radius, paddle.myx, paddle.myy, paddle.width, paddle.height) == true)
 	{
 		ball.vely = -ball.vely;
 		ball.up = true;
 		ball.down = false;
+	}
+
+	if (hitCount == 35) {
+		gameover_flag = true;
 	}
 	draw();
 }
@@ -241,6 +246,26 @@ void specialDown(int key, int x, int y)
 	}
 }
 
+
+void print_text(string str)
+{
+	int len = str.length();
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(0, 500, 0, 500);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	for (int i = 0; i < len; ++i)
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, str[i]);
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+}
+
+
 void myinit()
 {
 	glViewport(0, 0, 500, 500);
@@ -252,83 +277,119 @@ void myinit()
 
 void draw()		//Render the objects on the screen using the latest updated co-ordinates 
 {
-	if (level2_flag == false) {
-		for (int i = 0; i < 45; i++)
-		{
-			if (b[i].alive == true)
-			{
-				if (i % 2 == 0) glColor3fv(color1);
-				else glColor3fv(color2);
-				glBegin(GL_POLYGON);
-				glVertex2f(b[i].x, b[i].y);
-				glVertex2f(b[i].x + b[i].w, b[i].y);
-				glVertex2f(b[i].x + b[i].w, b[i].y + b[i].h);
-				glVertex2f(b[i].x, b[i].y + b[i].h);
-				glEnd();
-			}
-		}
-		string level1 = "LEVEL 1 ";
-		glColor3f(0.0, 0.0, 0.0);
-		glRasterPos2f(0.0 + 10.0, 0.0 + 480.0);
-		glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24, (unsigned char *)level1.c_str());
-	}
-
-	else if (level2_flag == true)
+	if (gameover_flag == false)
 	{
-		for (int i = 0; i < 45; i++)
-		{
-			if (a[i].alive == true)
+		if (level2_flag == false) {
+			for (int i = 0; i < 45; i++)
 			{
-				if (i % 2 == 0) glColor3fv(color1);
-				else glColor3fv(color2);
-				glBegin(GL_POLYGON);
-				glVertex2f(a[i].x, a[i].y);
-				glVertex2f(a[i].x + a[i].w, a[i].y);
-				glVertex2f(a[i].x + a[i].w, a[i].y + a[i].h);
-				glVertex2f(a[i].x, a[i].y + a[i].h);
-				glEnd();
+				if (b[i].alive == true)
+				{
+					if (i % 2 == 0) glColor3fv(color1);
+					else glColor3fv(color2);
+					glBegin(GL_POLYGON);
+					glVertex2f(b[i].x, b[i].y);
+					glVertex2f(b[i].x + b[i].w, b[i].y);
+					glVertex2f(b[i].x + b[i].w, b[i].y + b[i].h);
+					glVertex2f(b[i].x, b[i].y + b[i].h);
+					glEnd();
+				}
 			}
+			string level1 = "LEVEL 1 ";
+			glColor3f(0.0, 0.0, 0.0);
+			glRasterPos2f(0.0 + 10.0, 0.0 + 480.0);
+			glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24, (unsigned char *)level1.c_str());
 		}
-		string level2 = "LEVEL 2 ";
+
+		else if (level2_flag == true)
+		{
+			for (int i = 0; i < 45; i++)
+			{
+				if (a[i].alive == true)
+				{
+					if (i % 2 == 0) glColor3fv(color1);
+					else glColor3fv(color2);
+					glBegin(GL_POLYGON);
+					glVertex2f(a[i].x, a[i].y);
+					glVertex2f(a[i].x + a[i].w, a[i].y);
+					glVertex2f(a[i].x + a[i].w, a[i].y + a[i].h);
+					glVertex2f(a[i].x, a[i].y + a[i].h);
+					glEnd();
+				}
+			}
+			string level2 = "LEVEL 2 ";
+			glColor3f(0.0, 0.0, 0.0);
+			glRasterPos2f(0.0 + 10.0, 0.0 + 480.0);
+			glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24, (unsigned char *)level2.c_str());
+		}
+
+		glColor3fv(paddle.color);
+		glBegin(GL_POLYGON);
+		glVertex2f(paddle.myx, paddle.myy);
+		glVertex2f(paddle.myx + paddle.width, paddle.myy);
+		glVertex2f(paddle.myx + paddle.width, paddle.myy + paddle.height);
+		glVertex2f(paddle.myx, paddle.myy + paddle.height);
+		glEnd();
+
+		//# of triangles used to draw circle
+
+		glColor3fv(ball.color);
+		glBegin(GL_TRIANGLE_FAN);
+		glVertex2f(ball.ballx, ball.bally); // center of circle
+		for (int i = 0; i <= triangleAmount; i++) {
+			glVertex2f(
+				ball.ballx + (ball.radius * cos(i *  twicePi / triangleAmount)),
+				ball.bally + (ball.radius * sin(i * twicePi / triangleAmount))
+			);
+		}
+		glEnd();
+
+		//to display score
+		string playerScore = "SCORE: ";
+		char buffer[33];
+		_itoa_s(hitCount, buffer, 10);
+		playerScore += buffer;
+
 		glColor3f(0.0, 0.0, 0.0);
-		glRasterPos2f(0.0 + 10.0, 0.0 + 480.0);
-		glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24, (unsigned char *)level2.c_str());
+		glRasterPos2f(0.0 + 380.0, 0.0 + 480.0);
+		glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24, (unsigned char *)playerScore.c_str());
+
+		glutPostRedisplay();
+		glutSwapBuffers();
 	}
+	else
+	{
+		if (hitCount == 35) {
+			glClearColor(0.0, 0.0, 0.0, 0.0);
+			glColor3f(0.0, 0.7, 1.0);
+			string str = "GAME COMPLETED";
+			glRasterPos2i(130, 300);
+			print_text(str);
+		}
+		else {
+			glClearColor(0.0, 0.0, 0.0, 0.0);
+			glColor3f(1.0, 0.0, 0.0);
+			string str = "GAME OVER";
+			glRasterPos2i(158, 300);
+			print_text(str);
+		}
+		string score = "YOUR SCORE :";
+		glColor3f(0.2, 1.0, 0.4);
+		char buffer[33];
+		_itoa_s(hitCount, buffer, 10);
+		score += buffer;
+		glRasterPos2i(145, 260);
+		print_text(score);
 
-	glColor3fv(paddle.color);
-	glBegin(GL_POLYGON);
-	glVertex2f(paddle.myx, paddle.myy);
-	glVertex2f(paddle.myx + paddle.width, paddle.myy);
-	glVertex2f(paddle.myx + paddle.width, paddle.myy + paddle.height);
-	glVertex2f(paddle.myx, paddle.myy + paddle.height);
-	glEnd();
+		string name1 = "PROJECT BY : SWARUP E (1CE15CS148)";
+		glColor3f(1.0, 1.0, 0.5);
+		glRasterPos2i(20, 50);
+		print_text(name1);
 
-	//# of triangles used to draw circle
-
-	glColor3fv(ball.color);
-	glBegin(GL_TRIANGLE_FAN);
-	glVertex2f(ball.ballx, ball.bally); // center of circle
-	for (int i = 0; i <= triangleAmount; i++) {
-		glVertex2f(
-			ball.ballx + (ball.radius * cos(i *  twicePi / triangleAmount)),
-			ball.bally + (ball.radius * sin(i * twicePi / triangleAmount))
-		);
+		string name2 = "DIVYA R B  (1CE15CS039)";
+		glColor3f(1.0, 1.0, 0.5);
+		glRasterPos2i(182, 20);
+		print_text(name2);
 	}
-	glEnd();
-
-	//to display score
-	string playerScore = "SCORE: ";
-	char buffer[33];
-	_itoa_s(hitCount, buffer, 10);
-	playerScore += buffer;
-
-	glColor3f(0.0, 0.0, 0.0);
-	glRasterPos2f(0.0 + 380.0, 0.0 + 480.0);
-	glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24, (unsigned char *)playerScore.c_str());
-
-	glutPostRedisplay();
-	glutSwapBuffers();
-
 }
 void display()
 {
