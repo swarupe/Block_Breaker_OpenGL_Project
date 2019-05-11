@@ -384,11 +384,6 @@ void draw()		//Render the objects on the screen using the latest updated co-ordi
 		glColor3f(1.0, 1.0, 0.5);
 		glRasterPos2i(20, 50);
 		print_text(name1);
-
-		string name2 = "DIVYA R B  (1CE15CS039)";
-		glColor3f(1.0, 1.0, 0.5);
-		glRasterPos2i(182, 20);
-		print_text(name2);
 	}
 }
 void display()
